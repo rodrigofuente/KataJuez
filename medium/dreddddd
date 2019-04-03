@@ -1,0 +1,15 @@
+#!/bin/bash
+
+$1 reported_ok expected
+if [ $? -eq 0 ]; then
+  echo "bien"
+else
+  echo "mal"
+fi
+
+$1 reported_ko expected
+if [ $? -eq 0 ]; then
+  echo "mal"
+else
+  echo "bien"
+fi

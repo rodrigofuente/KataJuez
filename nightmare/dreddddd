@@ -1,0 +1,32 @@
+#!/bin/bash
+
+mem=$(awk '/MemTotal/ {print $2*1024*1.5}' /proc/meminfo)
+dd if=/dev/zero of=expected bs=1 count=1 seek=$(($mem/2))
+echo -n "a" >> expected
+dd if=/dev/zero of=expected bs=1 count=1 seek=$mem
+
+dd if=/dev/zero of=reported_ok bs=1 count=1 seek=$(($mem/2))
+echo -n "a" >> reported_ok
+dd if=/dev/zero of=reported_ok bs=1 count=1 seek=$mem
+
+dd if=/dev/zero of=reported_ko bs=1 count=1 seek=$(($mem/2))
+echo -n "b" >> reported_ko
+dd if=/dev/zero of=reported_ko bs=1 count=1 seek=$mem
+
+$1 reported_ok expected
+if [ $? -eq 0 ]; then
+  echo "bien"
+else
+  echo "mal"
+fi
+
+$1 reported_ko expected
+if [ $? -eq 0 ]; then
+  echo "mal"
+else
+  echo "bien"
+fi
+
+rm expected
+rm reported_ok
+rm reported_ko
