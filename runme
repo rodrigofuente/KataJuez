@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+for i in entrylevel medium hard nightmare
+do 
+  pushd $i
+    time ./dreddddd ../compare
+  popd
+done
